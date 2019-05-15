@@ -62,6 +62,7 @@ public class SudokuController implements Initializable {
 
 	private int iCellSize = 45;
 	private static final DataFormat myFormat = new DataFormat("com.cisc181.Data.Cell");
+	private static final DataFormat myTrashCan = new DataFormat("com.cisc181.Data.Cell");
 
 	private eGameDifficulty eGD = null;
 	private Sudoku s = null;
@@ -210,6 +211,35 @@ public class SudokuController implements Initializable {
 			// Add the pane to the grid
 			gridPaneNumbers.add(paneSource, iCol, 0);
 		}
+		StackPane spTrashCan = new StackPane();
+		ImageView ivTC=new ImageView(this.GetTrashCan());
+		spTrashCan.getChildren().add(ivTC);
+		
+		spTrashCan.setOnDragDropped(new EventHandler<DragEvent>() {
+			public void handle(DragEvent event) {
+				Dragboard db = event.getDragboard();
+				boolean success = false;
+				if (db.hasContent(myTrashCan)) {
+					Cell CellFrom = (Cell) db.getContent(myTrashCan);
+					
+					game.getSudoku().getPuzzle()[CellFrom.getiRow()][CellFrom.getiCol()] = 0;
+					
+					success = true;
+				}
+				event.setDropCompleted(success);
+				event.consume();
+			}
+		});
+		spTrashCan.setOnDragOver(new EventHandler<DragEvent>() {
+			public void handle(DragEvent event) {
+				if (event.getGestureSource() != spTrashCan && event.getDragboard().hasContent(myFormat)) {
+						event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+				}
+				event.consume();
+			}
+		});
+		
+		gridPaneNumbers.add(spTrashCan, s.getiSize()+1, 0);
 		return gridPaneNumbers;
 	}
 
@@ -261,6 +291,20 @@ public class SudokuController implements Initializable {
 
 				paneTarget.setOnMouseClicked(e -> {
 					System.out.println(paneTarget.getCell().getiCellValue());
+				});
+				paneTarget.setOnDragDetected(new EventHandler<MouseEvent>() {
+					public void handle(MouseEvent event) {
+
+						/* allow any transfer mode */
+						Dragboard db = paneTarget.startDragAndDrop(TransferMode.ANY);
+
+						/* put a string on dragboard */
+						// Put the Cell on the clipboard, on the other side, cast as a cell
+						ClipboardContent content = new ClipboardContent();
+						content.put(myTrashCan, paneTarget.getCell());
+						db.setContent(content);
+						event.consume();
+					}
 				});
 
 				// Fire this method as something is being dragged over a cell
@@ -376,6 +420,10 @@ public class SudokuController implements Initializable {
 	}
 	private Image GetImage(int iValue) {
 		InputStream is = getClass().getClassLoader().getResourceAsStream("img/" + iValue + ".png");
+		return new Image(is);
+	}
+	private Image GetTrashCan() {
+		InputStream is = getClass().getClassLoader().getResourceAsStream("img/.png");
 		return new Image(is);
 	}
 }
