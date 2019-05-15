@@ -62,7 +62,7 @@ public class SudokuController implements Initializable {
 
 	private int iCellSize = 45;
 	private static final DataFormat myFormat = new DataFormat("com.cisc181.Data.Cell");
-	private static final DataFormat myTrashCan = new DataFormat("com.cisc181.Data.Cell");
+	//private static final DataFormat myTrashCan = new DataFormat("com.cisc181.Data.Cell");
 
 	private eGameDifficulty eGD = null;
 	private Sudoku s = null;
@@ -219,8 +219,8 @@ public class SudokuController implements Initializable {
 			public void handle(DragEvent event) {
 				Dragboard db = event.getDragboard();
 				boolean success = false;
-				if (db.hasContent(myTrashCan)) {
-					Cell CellFrom = (Cell) db.getContent(myTrashCan);
+				if (db.hasContent(myFormat)) {
+					Cell CellFrom = (Cell) db.getContent(myFormat);
 					
 					game.getSudoku().getPuzzle()[CellFrom.getiRow()][CellFrom.getiCol()] = 0;
 					
@@ -301,7 +301,7 @@ public class SudokuController implements Initializable {
 						/* put a string on dragboard */
 						// Put the Cell on the clipboard, on the other side, cast as a cell
 						ClipboardContent content = new ClipboardContent();
-						content.put(myTrashCan, paneTarget.getCell());
+						content.put(myFormat, paneTarget.getCell());
 						db.setContent(content);
 						event.consume();
 					}
@@ -423,7 +423,7 @@ public class SudokuController implements Initializable {
 		return new Image(is);
 	}
 	private Image GetTrashCan() {
-		InputStream is = getClass().getClassLoader().getResourceAsStream("img/.png");
+		InputStream is = getClass().getClassLoader().getResourceAsStream("img/trash2.png");
 		return new Image(is);
 	}
 }
