@@ -809,6 +809,10 @@ public class Sudoku extends LatinSquare implements Serializable {
 	{
 		return this.getiMistakesCnt() + "/" + this.eGD.getiMaxMistakes() + " mistakes";
 	}
+	
+	public int getiMaxMistakes() {
+		return this.eGD.getiMaxMistakes();
+	}
 
 	/**
 	 * AddMistake - Add a mistake to the counter

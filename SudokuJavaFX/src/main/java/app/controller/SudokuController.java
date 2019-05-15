@@ -377,7 +377,9 @@ public class SudokuController implements Initializable {
 								
 								//TODO: Set the message for mistakes
 								if (game.getShowHints()) {
-
+									s.AddMistake();
+									System.out.println(s.getiMistakesCnt());
+									return;
 								}
 							}
 
